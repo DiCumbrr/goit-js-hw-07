@@ -1,6 +1,6 @@
-import { galleryItems } from './gallery-items.js'
+import { galleryItems } from './gallery-items.js';
 // Change code below this line
-const gallery = document.querySelector('.gallery')
+const gallery = document.querySelector('.gallery');
 const photoGallery = galleryItems
   .map(({ preview, original, description }) => {
     return `<a class="gallery__link" href="${original}">
@@ -10,34 +10,60 @@ const photoGallery = galleryItems
                 data-source="${original}"
                 alt="'${description}'"
             />
-            </a>`
+            </a>`;
   })
-  .join(' ')
-gallery.insertAdjacentHTML('beforeend', ` ${photoGallery}`)
-const escapeCloseModal = event => {
-  if (event.code === 'Escape') {
-    window.removeEventListener('keydown', escapeCloseModal)
-    document.querySelector('.basicLightbox').remove()
+  .join(' ');
+gallery.insertAdjacentHTML('beforeend', ` ${photoGallery}`);
+
+// const escapeCloseModal = event => {
+//   if (event.code === 'Escape') {
+//     window.removeEventListener('keydown', escapeCloseModal)
+//     document.querySelector('.basicLightbox').remove()
+//   }
+//   return
+// }
+
+function clickImg({ target }) {
+  evt.preventDefault();
+  console.log(evt.target.dataset.source);
+  if (target.nodeName !== 'IMG') {
+    return;
   }
-  return
+  const instance = basicLightbox.create(
+    `<img  src="${target.dataset.source}" width ="800" height="600">`,
+  );
+  instance.show();
+
+  window.addEventListener('keydown', onEscapePress);
 }
 
-const clickImg = (evt) => {
-    evt.preventDefault();
-    window.addEventListener('keydown', escapeCloseModal);
-    if (!evt.target.classList.contains("gallery__image")) { return; }
-    const instance = basicLightbox
-        .create(`<img  src="${evt.target.dataset.source}"></img>`)
-    instance.show()
-}; 
-gallery.addEventListener('click', clickImg);
-
-
-console.log(galleryItems)
-
-
-
-
+function onEscapePress(event) {
+  if (event.key === 'Escape') {
+    instance.close();
+    window.removeEventListener('keydown', onEscapePress);
+    console.log(event.code);
+  }
+  const instance = basicLightbox.create(
+    `<img src="${galleryOriginalUrl}" width="800" height="600">`,
+    {
+      onShow: instance => {
+        document.addEventListener('keydown', function (event) {
+          if (event.key === 'Escape') {
+            return instance.close();
+          }
+        });
+      },
+      onClose: instance => {
+        document.addEventListener('keydown', function (event) {
+          if (event.key === 'Escape') {
+            return instance.close();
+          }
+        });
+      },
+    },
+  );
+  instance.show();
+}
 
 // import { galleryItems } from './gallery-items.js'
 
