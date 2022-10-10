@@ -8,7 +8,7 @@ const createLi = galleryItems
       `<a class="gallery__link">
       <img src = '${elem.preview}'
        class="gallery__image" alt='${elem.description}'
-       data-secondSrc=${elem.original}'>
+       data-secondSrc=${elem.original}>
        </a>`,
   )
   .join('');
